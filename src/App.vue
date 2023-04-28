@@ -1,128 +1,205 @@
 <template>
 	<main>
+		<!-- Sidebar start -->
 		<aside class="tabContainer">
-      <!-- Sidebar start -->
-      <button type="button" class="btn" @click.prevent="activephase = 'personalInfo'">
-			<span class="btn--default" :class="{btn__active: activephase === 'personalInfo'}">1</span>
-			<div class="btn--description" v-if="!isMobile">
-				<p>step 1</p>
-				<p>your info</p>
-			</div>
-		</button>
-      <button type="button" class="btn" @click.prevent="activephase = 'selectPlan'">
-			<span class="btn--default" :class="{btn__active: activephase === 'selectPlan'}">2</span>
-			<div class="btn--description" v-if="!isMobile">
-				<p>Step 2 </p>
-				<p>Select plan</p>
-			</div>
-		</button>
-      <button type="button" class="btn" @click.prevent="activephase = 'pickAddons'">
-			<span class="btn--default" :class="{btn__active: activephase === 'pickAddons'}">3</span>
-			<div class="btn--description" v-if="!isMobile">
-				<p>Step 3</p>
-				<p> Add-ons</p>
-			</div>
-		</button>
-      <button type="button" class="btn" @click.prevent="activephase = 4">
-			<span class="btn--default" :class="{btn__active: activephase === 'summary'}">4</span>
-			<div class="btn--description" v-if="!isMobile">
-				<p>Step 4</p>
-				<p>Summary</p>
-			</div>
-		</button>
+			<button
+				type="button"
+				class="btn"
+				@click.prevent="activephase = 'personalInfo'"
+			>
+				<span class="btn--default">
+					<!-- :class="{ activeStep: activephase === 'personalInfo' }" -->
+					1
+				</span>
+				<div class="btn--description" v-if="!isMobile">
+					<p>step 1</p>
+					<p>your info</p>
+				</div>
+			</button>
+			<button
+				type="button"
+				class="btn"
+				@click.prevent="activephase = 'selectPlan'"
+			>
+				<span class="btn--default">
+					<!-- :class="{ activeStep: activephase === 'selectPlan' }" -->
+					2</span
+				>
+				<div class="btn--description" v-if="!isMobile">
+					<p>Step 2</p>
+					<p>Select plan</p>
+				</div>
+			</button>
+			<button
+				type="button"
+				class="btn"
+				@click.prevent="activephase = 'pickAddons'"
+			>
+				<span class="btn--default">
+					<!-- :class="{ activeStep: activephase === 'pickAddons' }" -->
+					3</span
+				>
+				<div class="btn--description" v-if="!isMobile">
+					<p>Step 3</p>
+					<p>Add-ons</p>
+				</div>
+			</button>
+			<button
+				type="button"
+				class="btn"
+				@click.prevent="activephase = 'summary'"
+			>
+				<span class="btn--default">
+					<!-- :class="{ activeStep: activephase === 'summary' }" -->
+					4</span
+				>
+				<div class="btn--description" v-if="!isMobile">
+					<p>Step 4</p>
+					<p>Summary</p>
+				</div>
+			</button>
+		</aside>
+		<!-- Sidebar end -->
 
-				
-
-      <!-- Sidebar end -->
-    </aside>
-		<section class="form__container">
-			<form>
-				<!-- Step 1 start -->
-				<fieldset v-if="activephase === 'personalInfo'">
-					<legend>Personal info</legend>
-					<p>Please provide your name, email address, and phone number.</p>
+		<!-- form wizard -->
+		<FormWizard :validation-schema="schema" @submit="onSubmit">
+			<!-- step 1 -->
+			<FormStep>
+				<h1 class="heading">Personal info</h1>
+				<p class="form__description">
+					Please provide your name, email address, and phone number.
+				</p>
+				<section class="form__group">
 					<section class="form__control">
-						<label for="name">Name</label>
-						<input
+						<label for="fullname">Name</label>
+						<Field
 							type="text"
-							name="name"
-							id="name"
+							name="fullname"
+							id="fullname"
 							placeholder="e.g. Stephen King"
+							class="form__field"
+							:class="{ 'form__field--error': ErrorMessage.message }"
 						/>
+						<ErrorMessage name="fullname" class="error error--personal__info" />
 					</section>
 
 					<section class="form__control">
 						<label for="email">Email Address</label>
-						<input
+						<Field
 							type="email"
 							name="email"
 							id="email"
 							placeholder="e.g. stephenking@lorem.com"
+							class="form__field"
 						/>
+						<!-- :class="{'form__field--error': ErrorMessage.name}" -->
+						<ErrorMessage name="email" class="error error--personal__info" />
 					</section>
 
 					<section class="form__control">
 						<label for="phoneNumber">Phone Number</label>
-						<input
+						<Field
 							type="tel"
 							name="phoneNumber"
 							id="phoneNumber"
 							placeholder="e.g. +1 234 567 890"
+							class="form__field"
+						/>
+						<ErrorMessage
+							name="phoneNumber"
+							class="error error--personal__info"
 						/>
 					</section>
-				</fieldset>
-				<!-- Step 1 end -->
+				</section>
+			</FormStep>
+			<!-- step 1 -->
 
-				<!-- Step 2 start -->
-				<fieldset v-if="activephase === 'selectPlan'">
-					<legend>Select your plan</legend>
-					<p>You have the option of monthly or yearly billing.</p>
-
+			<!-- step 2 starts -->
+			<FormStep>
+				<h1>Select your plan</h1>
+				<p>You have the option of monthly or yearly billing.</p>
+				<section class="form__group__plans">
 					<section class="form__group--checkbox">
-						<label for="plan">
-							<p class="plan">Arcade</p>
-							<p class="plan__price">$9/mo</p>
-							<input type="checkbox" name="arcade" id="plan" />
+						<Field
+							type="radio"
+							name="plan"
+							value="arcade"
+							id="arcade"
+							class="plan--checkbox"
+						/>
+						<label for="arcade" class="plan--label">
+							<img src="@/assets/images/icon-arcade.svg" alt="" />
+							<section>
+								<p class="plan">Arcade</p>
+								<p class="plan__price">$9/mo</p>
+								<p class="plan__discount">2 months free</p>
+							</section>
 						</label>
 					</section>
 					<section class="form__group--checkbox">
-						<label for="plan">
-							<p class="plan">Advanced</p>
-							<p class="plan__price">$12/mo</p>
-							<input type="checkbox" name="arcade" id="plan" />
+						<Field
+							type="radio"
+							name="plan"
+							value="advanced"
+							id="advanced"
+							class="plan--checkbox"
+						/>
+						<label for="advanced" class="plan--label">
+							<img src="@/assets/images/icon-advanced.svg" alt="" />
+							<section>
+								<p class="plan">Advanced</p>
+								<p class="plan__price">$12/mo</p>
+								<p class="plan__discount">2 months free</p>
+							</section>
 						</label>
 					</section>
 					<section class="form__group--checkbox">
-						<label for="plan">
-							<p class="plan">Pro</p>
-							<p class="plan__price">$15/mo</p>
-							<input type="checkbox" name="arcade" id="plan" />
+						<Field
+							type="radio"
+							name="plan"
+							value="pro"
+							id="pro"
+							class="plan--checkbox"
+						/>
+						<label for="pro" class="plan--label">
+							<img src="@/assets/images/icon-pro.svg" alt="" />
+							<section>
+								<p class="plan">Pro</p>
+								<p class="plan__price">$15/mo</p>
+								<p class="plan__discount">2 months free</p>
+							</section>
 						</label>
 					</section>
 
+					<ErrorMessage name="plan" class="error--plan" />
+				</section>
+
+				<section class="rate__toggler">
+					<p>Monthly</p>
 					<section>
-						<p>Monthly</p>
-						<section>
-							<label for="rate" class="toggle__rate">
-								<input type="checkbox" name="rate" id="rate" />
-								<span class="toggle__rate__ball"></span>
-							</label>
-							<!-- <section class="toggle__rate">
-              </section> -->
-						</section>
-						<p>Yearly</p>
+						<label for="rate" class="toggle__rate">
+							<Field type="checkbox" name="rate" id="rate" />
+							<span class="toggle__rate__ball"></span>
+						</label>
 					</section>
-				</fieldset>
-				<!-- Step 2 end -->
+					<p>Yearly</p>
+				</section>
+			</FormStep>
+			<!-- step 2 ends -->
 
-				<!-- Step 3 start -->
-				<fieldset v-if="activephase === 'pickAddons'">
-					<legend>Pick add-ons</legend>
+			<!-- step 3 -->
+			<FormStep>
+					<h1>Pick add-ons</h1>
 					<p>Add-ons help enhance your gaming experience.</p>
 
 					<section class="form__group--checkbox__addons">
-						<label for="add_ons" class="label__add_ons checkbox__addons">
-							<input type="checkbox" name="arcade" id="add_ons" />
+						<label for="onlineService" class="label__add_ons checkbox__addons">
+							<Field 
+							type="checkbox" 
+							name="addons" 
+							id="onlineService"
+							value="onlineService"
+							/>
 							<section>
 								<h1 class="label__title">Online service</h1>
 								<p>Access to multiplayer games</p>
@@ -132,8 +209,13 @@
 					</section>
 
 					<section class="form__group--checkbox__addons">
-						<label for="add_ons" class="label__add_ons checkbox__addons">
-							<input type="checkbox" name="arcade" id="add_ons" />
+						<label for="largerStorage" class="label__add_ons checkbox__addons">
+							<Field 
+							type="checkbox" 
+							name="addons" 
+							id="largerStorage" 
+							value="largerStorage"
+							/>
 							<section>
 								<h1 class="label__title">Larger storage</h1>
 								<p>Extra 1TB of cloud save</p>
@@ -143,8 +225,11 @@
 					</section>
 
 					<section class="form__group--checkbox__addons">
-						<label for="add_ons" class="label__add_ons checkbox__addons">
-							<input type="checkbox" name="arcade" id="add_ons" />
+						<label for="customizableProfile" class="label__add_ons checkbox__addons">
+							<Field type="checkbox"
+							name="addons"
+							id="customizableProfile"
+							value="customizableProfile" />
 							<section>
 								<h1 class="label__title">Customizable Profile</h1>
 								<p>Custom theme on your profile</p>
@@ -152,112 +237,67 @@
 							<p class="add_ons__price">+$2/mo</p>
 						</label>
 					</section>
-				</fieldset>
-				<!-- Step 3 end -->
 
-				<!-- Step 4 start -->
+					<ErrorMessage name="addons" />
+				</FormStep>
+			<!-- step 3 -->
 
-				<fieldset v-if="activephase === 'summary'">
-					<legend>Finishing up</legend>
-					<p>Double-check everything looks OK before confirming.</p>
-					<!-- Dynamically add subscription and add-on selections here -->
-					<section class="summary">
-						<section class="summary__main">
-							<section>
-								<section>
-									<p>Arcade(Monthly)</p>
-									<button class="btn__change" type="button">Change</button>
-								</section>
-								<p>$9/mo</p>
-							</section>
-							<section>
-								<p>Online service</p>
-								<p>+$1/mo</p>
-							</section>
-							<section>
-								<p>Large storage</p>
-								<p>+$2/mo</p>
-							</section>
-						</section>
+			<!-- step 4 -->
+			<!-- step 4 -->
 
-						<section class="summary__total">
-							<p>Total (per month)</p>
-							<p class="total__rate">+$12/mo</p>
-						</section>
-					</section>
-				</fieldset>
-				<!-- Step 4 end -->
-
-				<!-- Step 5 start -->
-				<section class="gratitude" v-if="activephase === 'gratitude'">
-					<h1>Thank you!</h1>
-					<p>
-						Thanks for confirming your subscription! We hope you have fun using
-						our platform. If you ever need support, please feel free to email us
-						at support@loremgaming.com.
-					</p>
-				</section>
-				<!-- Step 5 end -->
-				<section class="btn__container">
-					<button type="button">Go Back</button>
-
-					<section>
-						<button type="button">Next Step</button>
-						<button type="submit">Confirm</button>
-					</section>
-				</section>
-			</form>
-		</section>
+			<!-- step 5 -->
+			<!-- step 5 -->
+		</FormWizard>
+		<!-- form wizard -->
 	</main>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref } from "vue";
+import { object, string, number, array } from "yup";
+import { Field, ErrorMessage } from "vee-validate";
 
-// import PersonalInfo from "./components/PersonalInfo.vue";
+import FormWizard from "./components/multiStep/FormWizard.vue";
+import FormStep from "./components/multiStep/FormStep.vue";
 
-const activephase = ref('personalInfo');
+const activephase = ref("personalInfo");
+
 const isMobile = ref(null);
 const windowWidth = ref(null);
 
-
 function checkScreen() {
-  windowWidth.value = window.innerWidth;
-  if (windowWidth.value < 768) {
-    isMobile.value = true;
-    return;
-  }
-  isMobile.value = false;
-  return;
+	windowWidth.value = window.innerWidth;
+	if (windowWidth.value < 810) {
+		isMobile.value = true;
+		return;
+	}
+	isMobile.value = false;
+	return;
 }
 onMounted(() => {
-  checkScreen();
-  window.addEventListener("resize", checkScreen)
-
+	checkScreen();
+	window.addEventListener("resize", checkScreen);
 });
-// console.log(window.innerWidth);
+
+const schema = [
+	object({
+		fullname: string().required("This field is required"),
+		email: string()
+			.email("Please enter a valid email")
+			.required("This field is required"),
+		phoneNumber: number().required("This field is required"),
+	}),
+	object({
+		plan: string().required("Please select a plan"),
+	}),
+	object({
+		addons: array().of(string()).required("Please pick add-ons"),
+	}),
+];
+
+function onSubmit(formData) {
+	console.log(JSON.stringify(formData, null, 2));
+}
 </script>
 
-<style lang="scss" scoped>
-.btn {
-	display: flex;
-	align-items: center;
-	gap: 1em;
-}
-.btn--default {
-	padding: 1em;
-	width: 1em;
-	height: 1em;
-	border-radius: 50%;
-	border: 1px solid;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-.btn--description {
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	text-transform: uppercase;
-}
-</style>
+<style lang="scss" scoped></style>

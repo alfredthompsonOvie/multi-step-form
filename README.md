@@ -33,3 +33,11 @@ npm run build
 ```sh
 npm run lint
 ```
+MainApp.vue has the contents from App....
+
+in App.vue we have
+aside
+multiStep
+
+in multiStep.vue we have
+singleStep(terrible name i know)
