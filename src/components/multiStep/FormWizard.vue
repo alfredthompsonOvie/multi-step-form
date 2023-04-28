@@ -42,6 +42,10 @@
 <script setup>
 import { computed, provide, ref } from 'vue';
 import { useForm } from 'vee-validate';
+import { useFormDataStore } from "@/store/formData";
+
+const store = useFormDataStore();
+
 
 const props = defineProps({
 	validationSchema: {
@@ -53,7 +57,7 @@ const emit = defineEmits(['submit']);
 
 const currentStepIdx = ref(0);
 const stepCounter = ref(0);
-
+const FormDetails = ref([]);
 
 // Injects the starting step, child <form-steps> will use this to generate their ids
 provide('STEP_COUNTER', stepCounter);
@@ -92,7 +96,9 @@ const { values, handleSubmit } = useForm({
 const onSubmit = handleSubmit((values) => {
   if (!isLastStep.value) {
     currentStepIdx.value++;
-
+    // console.log(values);
+    store.updateFormData(values)
+    // FormDetails.value[0] = values;
     return;
   }
 

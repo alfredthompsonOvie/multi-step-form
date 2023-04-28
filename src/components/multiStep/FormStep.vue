@@ -20,11 +20,6 @@ const shouldShow = computed(() => {
   return currentIdx === formStepIdx.value;
 });
 
-
-
-/* 
-
- */ 
 </script>
 
 <style scoped>

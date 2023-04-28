@@ -189,60 +189,95 @@
 
 			<!-- step 3 -->
 			<FormStep>
-					<h1>Pick add-ons</h1>
-					<p>Add-ons help enhance your gaming experience.</p>
+				<h1>Pick add-ons</h1>
+				<p>Add-ons help enhance your gaming experience.</p>
 
-					<section class="form__group--checkbox__addons">
-						<label for="onlineService" class="label__add_ons checkbox__addons">
-							<Field 
-							type="checkbox" 
-							name="addons" 
+				<section class="form__group--checkbox__addons">
+					<label for="onlineService" class="label__add_ons checkbox__addons">
+						<Field
+							type="checkbox"
+							name="addons"
 							id="onlineService"
 							value="onlineService"
-							/>
-							<section>
-								<h1 class="label__title">Online service</h1>
-								<p>Access to multiplayer games</p>
-							</section>
-							<p class="add_ons__price">+$1/mo</p>
-						</label>
-					</section>
+						/>
+						<section>
+							<h1 class="label__title">Online service</h1>
+							<p>Access to multiplayer games</p>
+						</section>
+						<p class="add_ons__price">+$1/mo</p>
+					</label>
+				</section>
 
-					<section class="form__group--checkbox__addons">
-						<label for="largerStorage" class="label__add_ons checkbox__addons">
-							<Field 
-							type="checkbox" 
-							name="addons" 
-							id="largerStorage" 
+				<section class="form__group--checkbox__addons">
+					<label for="largerStorage" class="label__add_ons checkbox__addons">
+						<Field
+							type="checkbox"
+							name="addons"
+							id="largerStorage"
 							value="largerStorage"
-							/>
-							<section>
-								<h1 class="label__title">Larger storage</h1>
-								<p>Extra 1TB of cloud save</p>
-							</section>
-							<p class="add_ons__price">+$2/mo</p>
-						</label>
-					</section>
+						/>
+						<section>
+							<h1 class="label__title">Larger storage</h1>
+							<p>Extra 1TB of cloud save</p>
+						</section>
+						<p class="add_ons__price">+$2/mo</p>
+					</label>
+				</section>
 
-					<section class="form__group--checkbox__addons">
-						<label for="customizableProfile" class="label__add_ons checkbox__addons">
-							<Field type="checkbox"
+				<section class="form__group--checkbox__addons">
+					<label
+						for="customizableProfile"
+						class="label__add_ons checkbox__addons"
+					>
+						<Field
+							type="checkbox"
 							name="addons"
 							id="customizableProfile"
-							value="customizableProfile" />
-							<section>
-								<h1 class="label__title">Customizable Profile</h1>
-								<p>Custom theme on your profile</p>
-							</section>
-							<p class="add_ons__price">+$2/mo</p>
-						</label>
-					</section>
+							value="customizableProfile"
+						/>
+						<section>
+							<h1 class="label__title">Customizable Profile</h1>
+							<p>Custom theme on your profile</p>
+						</section>
+						<p class="add_ons__price">+$2/mo</p>
+					</label>
+				</section>
 
-					<ErrorMessage name="addons" />
-				</FormStep>
+				<ErrorMessage name="addons" />
+			</FormStep>
 			<!-- step 3 -->
 
 			<!-- step 4 -->
+			<FormStep >
+				<h1>Finishing up</h1>
+				<p>Double-check everything looks OK before confirming.</p>
+				<!-- Dynamically add subscription and add-on selections here -->
+				<p>{{ store.getFormData }}</p>
+				<section class="summary">
+					<section class="summary__main">
+						<section>
+							<section>
+								<p>Arcade(Monthly)</p>
+								<button class="btn__change" type="button">Change</button>
+							</section>
+							<p>$9/mo</p>
+						</section>
+						<section>
+							<p>Online service</p>
+							<p>+$1/mo</p>
+						</section>
+						<section>
+							<p>Large storage</p>
+							<p>+$2/mo</p>
+						</section>
+					</section>
+
+					<section class="summary__total">
+						<p>Total (per month)</p>
+						<p class="total__rate">+$12/mo</p>
+					</section>
+				</section>
+			</FormStep>
 			<!-- step 4 -->
 
 			<!-- step 5 -->
@@ -259,8 +294,17 @@ import { Field, ErrorMessage } from "vee-validate";
 
 import FormWizard from "./components/multiStep/FormWizard.vue";
 import FormStep from "./components/multiStep/FormStep.vue";
+import { useFormDataStore } from "./store/formData";
+
+
+const store = useFormDataStore();
+
 
 const activephase = ref("personalInfo");
+
+
+
+
 
 const isMobile = ref(null);
 const windowWidth = ref(null);
