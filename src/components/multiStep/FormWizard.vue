@@ -1,7 +1,6 @@
 <template>
 	<form 
   @submit="onSubmit"
-  
   >
 		<section class="form__contents">
 			<section class="select__plan"></section>
@@ -40,12 +39,12 @@
 </template>
 
 <script setup>
-import { computed, provide, ref } from 'vue';
+import { computed, provide, ref, watchEffect } from 'vue';
 import { useForm } from 'vee-validate';
-import { useFormDataStore } from "@/store/formData";
+import { useFormValuesStore } from '../../store/formValues';
+import { generateFormSummary } from '../../composables/generateFormSummary';
 
-const store = useFormDataStore();
-
+const store = useFormValuesStore();
 
 const props = defineProps({
 	validationSchema: {
@@ -57,7 +56,7 @@ const emit = defineEmits(['submit']);
 
 const currentStepIdx = ref(0);
 const stepCounter = ref(0);
-const FormDetails = ref([]);
+// const FormDetails = ref([]);
 
 // Injects the starting step, child <form-steps> will use this to generate their ids
 provide('STEP_COUNTER', stepCounter);
@@ -71,7 +70,7 @@ const isLastStep = computed(() => {
 	return currentStepIdx.value === stepCounter.value - 1;
 });
 
-const goBack = () => {
+const goToPrev = () => {
 	if (currentStepIdx.value === 0) {
 		return;
 	}
@@ -86,18 +85,36 @@ const nextStep = () => {
 
 const currentSchema = computed(()=>props.validationSchema[currentStepIdx.value])
 
-const { values, handleSubmit } = useForm({
-
+const { handleSubmit } = useForm({
+  
 	validationSchema: currentSchema,
 
 	keepValuesOnUnmount: true,
 });
 
+
+// watchEffect(() => {
+//   console.log('FormDetails', FormDetails.value);
+//   // store.updateFormData(values);
+// })
+
+// watchEffect(() => {
+// 	console.log(values);
+// })
+
+
 const onSubmit = handleSubmit((values) => {
   if (!isLastStep.value) {
     currentStepIdx.value++;
-    // console.log(values);
-    store.updateFormData(values)
+    // console.log("from FormWizard", values);
+    if (values.addons?.length) {
+      // console.log("from FormWizard", values);
+      // FormDetails.value = generateFormSummary(values);
+      store.updateFormData(generateFormSummary(values))
+    }
+    
+    // const formData = [values]
+    // console.log(formData);
     // FormDetails.value[0] = values;
     return;
   }

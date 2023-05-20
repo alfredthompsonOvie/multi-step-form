@@ -196,6 +196,7 @@ right: 0;
 	width: 100%;
 	
 	position: relative;
+	transition: all .3s linear;
 }
 .form__group--checkbox + .form__group--checkbox {
 	margin-top: 1em;
@@ -227,6 +228,7 @@ right: 0;
 .plan {
 	color: var(--MarineBlue);
 	font-weight: var(--fw-bold);
+	text-transform: capitalize;
 }
 .plan__price {
 	font-size: .85rem;
@@ -239,12 +241,15 @@ right: 0;
 }
 .error--plan {
   position: absolute;
-  top: 11em;
+  /* top: 11em; */
+	bottom: -2em;
   left: 50%;
   transform: translateX(-50%);
   color: var(--StrawberryRed);
   /* font-size: .9rem; */
 }
+
+/* =================================================================== */
 
 .rate__toggler {
 	display: flex;
@@ -259,7 +264,47 @@ right: 0;
 	align-self: center;
 	margin-bottom: .5em;
 }
-.toggle__rate {
+.toggle__rate__switch {
+	width: 2.5em;
+	height: 1.3em;
+	border-radius: 1em;
+	background-color: var(--MarineBlue);
+	position: relative;
+	padding: .12em;
+	
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+}
+.toggle__rate__label{
+  display: block;
+  cursor: pointer;
+	
+  width: 1em;
+  height: 1em;
+  background-color: white;
+  border-radius: 50%;
+  transition: .5s linear;
+  position: absolute;
+  top: .25em;
+	/* left: 0; */
+  transform:  translateX(0) rotate(0deg);
+	/* top: 50%; */
+  /* transform: translateY(-50%); */
+  /* z-index: 99; */
+	margin: 0;
+}
+.toggle__rate__checkbox:checked ~ .toggle__rate__label {
+  transform:translateX(1.5em) rotate(360deg);
+}
+.toggle__rate__checkbox {
+  opacity: 0;
+	position: absolute;
+	z-index: 1;
+	top: 0em;
+}
+/* =================================================================== */
+/* .toggle__rate {
 	display: block;
 	width: 2.5em;
 	padding: .2em;
@@ -270,6 +315,14 @@ right: 0;
 	align-items: center;
 	cursor: pointer;
 }
+.toggle__rate__checkbox:checked + .toggle__rate__ball {
+	transform: translateX(100%) rotate(360deg);
+}
+.toggle__rate__checkbox {
+  position: absolute;
+	top: 0;
+	opacity: 0;
+}
 .toggle__rate__ball {
 	width: 1em;
 	height: 1em;
@@ -279,49 +332,37 @@ right: 0;
 
 	transform: translateX(0%) rotate(0deg);
 	transition: all 1s cubic-bezier(0.075, 0.82, 0.165, 1);
-}
-
-.toggle__rate input[type='checkbox']{
-  position: absolute;
-	top: 0;
-	opacity: 0;
-}
-.toggle__rate input[type='checkbox']:checked + .toggle__rate__ball {
-	transform: translateX(100%) rotate(360deg);
-}
-/* 
+} */
 
 
-
-*/
 /* ! */
 /*! STEP 3 */
 /* ! PICK ADD-ONS */
-.form__group--checkbox__addons {
+.form__group__addons {
 	margin-top: 1em;
+	position: relative;
 }
-.label__add_ons {
+.addons__label {
 	display: flex;
 	align-items: center;
 	gap: 1em;
-	padding: 1em;
+	padding: 1em 1em 1em 3em;
 	border: 1px solid transparent;
 	border-radius: 8px;
 	box-shadow: -1px 1px 5px rgba(0, 0, 0, 0.2);
 	cursor: pointer;
 	transition: all .5s linear;
 }
-.label {
-	display: flex;
-	align-items: center;
-	gap: 1em;
+.addons__checkbox {
+	position: absolute;
+	top: 50%;
+	left: 1.1em;
+	transform: translateY(-50%);
+}
+.addons__checkbox:checked ~ .addons__label {
+	border: 1px solid var(--MarineBlue);
+	background-color: var(--Magnolia);
 
-	padding: 1em;
-	border: 1px solid transparent;
-	border-radius: 8px;
-	box-shadow: -1px 1px 5px rgba(0, 0, 0, 0.2);
-	cursor: pointer;
-	transition: all .5s linear;
 }
 .label__title {
 	font-size: 1rem;
@@ -359,6 +400,60 @@ right: 0;
   background-color: var(--MarineBlue);
 }
 
+/* ! */
+/*! STEP 4 */
+/* ! FINISHING UP */
+.summary__list {
+	--MarineBlue: hsl(213, 96%, 18%);
+	--PurplishBlue: hsl(243, 100%, 62%);
+	--PastelBlue: hsl(228, 100%, 84%);
+	--LightBlue: hsl(206, 94%, 87%);
+	--StrawberryRed: hsl(354, 84%, 57%);
+
+	--CoolGray: hsl(231, 11%, 63%);
+	--LightGray: hsl(229, 24%, 87%);
+	--Magnolia: hsl(217, 100%, 97%);
+	--Alabaster: hsl(231, 100%, 99%);
+	--White: hsl(0, 0%, 100%);
+	background-color: var(--Alabaster);
+	color: var(--CoolGray);
+	padding: 1em;
+	border-radius: 6px;
+	margin: 1em 0;
+	font-family: 'Ubuntu-Medium';
+}
+.summary__item:first-of-type {
+	border-bottom: 1px solid var(--LightGray);
+	color: var(--MarineBlue);
+	font-weight: 700;
+}
+
+.summary__item, .summary__total {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: .5em 0;
+}
+.summary__item section {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+}
+.summary__total {
+	padding-inline: 1em;
+	color: var(--CoolGray);
+}
+.editFormBtn {
+	/* background-color: red; */
+	display: inline-block;
+	margin-top: .5em;
+	padding: 0;
+	text-decoration: underline;
+	color: var(--PurplishBlue);
+	color: inherit;
+	font-family: inherit;
+	/* font-weight: 500; */
+}
 
 @media (min-width: 530px) {
   .form__step {

@@ -62,7 +62,11 @@
 		<!-- Sidebar end -->
 
 		<!-- form wizard -->
-		<FormWizard :validation-schema="schema" @submit="onSubmit">
+		<FormWizard 
+		:validation-schema="schema" 
+		@submit="onSubmit"
+		v-if="showForm"
+		>
 			<!-- step 1 -->
 			<FormStep>
 				<h1 class="heading">Personal info</h1>
@@ -115,58 +119,34 @@
 			<!-- step 1 -->
 
 			<!-- step 2 starts -->
+			<!-- SELECT PLAN -->
 			<FormStep>
 				<h1>Select your plan</h1>
 				<p>You have the option of monthly or yearly billing.</p>
 				<section class="form__group__plans">
-					<section class="form__group--checkbox">
+					<!--! loop starts here -->
+					<section
+						class="form__group--checkbox"
+						v-for="plan in displayPlan"
+						:key="plan.name"
+					>
 						<Field
 							type="radio"
 							name="plan"
-							value="arcade"
-							id="arcade"
+							:value="plan.name"
+							:id="plan.name"
 							class="plan--checkbox"
 						/>
-						<label for="arcade" class="plan--label">
-							<img src="@/assets/images/icon-arcade.svg" alt="" />
+						<label :for="plan.name" class="plan--label">
+							<img :src="`${getImageUrl(plan.image)}`" :alt="plan.name" />
 							<section>
-								<p class="plan">Arcade</p>
-								<p class="plan__price">$9/mo</p>
-								<p class="plan__discount">2 months free</p>
-							</section>
-						</label>
-					</section>
-					<section class="form__group--checkbox">
-						<Field
-							type="radio"
-							name="plan"
-							value="advanced"
-							id="advanced"
-							class="plan--checkbox"
-						/>
-						<label for="advanced" class="plan--label">
-							<img src="@/assets/images/icon-advanced.svg" alt="" />
-							<section>
-								<p class="plan">Advanced</p>
-								<p class="plan__price">$12/mo</p>
-								<p class="plan__discount">2 months free</p>
-							</section>
-						</label>
-					</section>
-					<section class="form__group--checkbox">
-						<Field
-							type="radio"
-							name="plan"
-							value="pro"
-							id="pro"
-							class="plan--checkbox"
-						/>
-						<label for="pro" class="plan--label">
-							<img src="@/assets/images/icon-pro.svg" alt="" />
-							<section>
-								<p class="plan">Pro</p>
-								<p class="plan__price">$15/mo</p>
-								<p class="plan__discount">2 months free</p>
+								<p class="plan">{{ plan.name }}</p>
+								<p class="plan__price">${{ plan.price }}/{{ plan.rate }}</p>
+								<transition name="fade">
+									<p class="plan__discount" v-if="showDiscountRate">
+										2 months free
+									</p>
+								</transition>
 							</section>
 						</label>
 					</section>
@@ -176,30 +156,52 @@
 
 				<section class="rate__toggler">
 					<p>Monthly</p>
-					<section>
-						<label for="rate" class="toggle__rate">
-							<Field type="checkbox" name="rate" id="rate" />
-							<span class="toggle__rate__ball"></span>
-						</label>
+					<section class="toggle__rate__switch">
+						<Field
+							v-slot="{ field }"
+							name="rate"
+							type="checkbox"
+							:value="true"
+							keepValue
+							v-model="formData.rate"
+							rules="string|required"
+						>
+							<!-- :unchecked-value="false" -->
+							<input
+								v-bind="field"
+								type="checkbox"
+								id="rate"
+								class="toggle__rate__checkbox"
+								name="rate"
+								:value="true"
+								@change="onChange"
+							/>
+						</Field>
+						<label for="rate" class="toggle__rate__label"></label>
 					</section>
+					<ErrorMessage name="rate" class="error--plan" />
+
 					<p>Yearly</p>
 				</section>
 			</FormStep>
 			<!-- step 2 ends -->
 
 			<!-- step 3 -->
+			<!-- PICK ADD_ONS -->
 			<FormStep>
 				<h1>Pick add-ons</h1>
 				<p>Add-ons help enhance your gaming experience.</p>
 
-				<section class="form__group--checkbox__addons">
-					<label for="onlineService" class="label__add_ons checkbox__addons">
-						<Field
-							type="checkbox"
-							name="addons"
-							id="onlineService"
-							value="onlineService"
-						/>
+				<section class="form__group__addons">
+					<Field
+						type="checkbox"
+						name="addons"
+						id="onlineService"
+						value="Online service"
+						class="addons__checkbox"
+						v-model="formData.addons"
+					/>
+					<label for="onlineService" class="addons__label">
 						<section>
 							<h1 class="label__title">Online service</h1>
 							<p>Access to multiplayer games</p>
@@ -208,14 +210,16 @@
 					</label>
 				</section>
 
-				<section class="form__group--checkbox__addons">
-					<label for="largerStorage" class="label__add_ons checkbox__addons">
-						<Field
-							type="checkbox"
-							name="addons"
-							id="largerStorage"
-							value="largerStorage"
-						/>
+				<section class="form__group__addons">
+					<Field
+						type="checkbox"
+						name="addons"
+						id="largerStorage"
+						value="Larger storage"
+						class="addons__checkbox"
+						v-model="formData.addons"
+					/>
+					<label for="largerStorage" class="addons__label">
 						<section>
 							<h1 class="label__title">Larger storage</h1>
 							<p>Extra 1TB of cloud save</p>
@@ -224,17 +228,16 @@
 					</label>
 				</section>
 
-				<section class="form__group--checkbox__addons">
-					<label
-						for="customizableProfile"
-						class="label__add_ons checkbox__addons"
-					>
-						<Field
-							type="checkbox"
-							name="addons"
-							id="customizableProfile"
-							value="customizableProfile"
-						/>
+				<section class="form__group__addons">
+					<Field
+						type="checkbox"
+						name="addons"
+						id="customizableProfile"
+						value="Customizable profile"
+						class="addons__checkbox"
+						v-model="formData.addons"
+					/>
+					<label for="customizableProfile" class="addons__label">
 						<section>
 							<h1 class="label__title">Customizable Profile</h1>
 							<p>Custom theme on your profile</p>
@@ -248,63 +251,73 @@
 			<!-- step 3 -->
 
 			<!-- step 4 -->
-			<FormStep >
+			<FormStep>
 				<h1>Finishing up</h1>
 				<p>Double-check everything looks OK before confirming.</p>
 				<!-- Dynamically add subscription and add-on selections here -->
-				<p>{{ store.getFormData }}</p>
-				<section class="summary">
-					<section class="summary__main">
+				<section class="summary__list">
+					<!-- {{  store.getFormData }} -->
+					<section class="summary__item">
 						<section>
-							<section>
-								<p>Arcade(Monthly)</p>
-								<button class="btn__change" type="button">Change</button>
-							</section>
-							<p>$9/mo</p>
+							<p>
+								<span>{{ store.getFormData.plan }}</span>
+								<span>({{ store.getFormData.rate }})</span>
+							</p>
+							<button class="editFormBtn">Change</button>
 						</section>
-						<section>
-							<p>Online service</p>
-							<p>+$1/mo</p>
-						</section>
-						<section>
-							<p>Large storage</p>
-							<p>+$2/mo</p>
-						</section>
-					</section>
+						<p>
 
-					<section class="summary__total">
-						<p>Total (per month)</p>
-						<p class="total__rate">+$12/mo</p>
+							${{
+								store.getFormData.planPrice
+							}}/{{ formData.rate ? "yr" : "mo" }}
+						</p>
 					</section>
+					<p
+						class="summary__item"
+						v-for="addon in store.getFormData.addons"
+						:key="addon"
+					>
+						<span>{{ addon.name }}</span>
+						<span>+${{ addon.price }}/{{ formData.rate ? "yr" : "mo" }}</span>
+
+					</p>
 				</section>
+				<section class="summary__total">
+					<p>Total (per {{ formData.rate ? "year" : "month" }})</p>
+					<p class="total__rate">+${{store.getFormData.total}}/{{ formData.rate ? "yr" : "mo" }}</p>
+				</section>
+
 			</FormStep>
 			<!-- step 4 -->
 
 			<!-- step 5 -->
+
 			<!-- step 5 -->
 		</FormWizard>
 		<!-- form wizard -->
+
+		<!-- Thank You -->
+		<ThankYou  v-else/>
 	</main>
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { object, string, number, array } from "yup";
 import { Field, ErrorMessage } from "vee-validate";
 
 import FormWizard from "./components/multiStep/FormWizard.vue";
 import FormStep from "./components/multiStep/FormStep.vue";
-import { useFormDataStore } from "./store/formData";
+import { useFormValuesStore } from "./store/formValues";
 
+import  ThankYou  from '@/components/ThankYou.vue';
 
-const store = useFormDataStore();
+const store = useFormValuesStore();
 
 
 const activephase = ref("personalInfo");
-
-
-
-
+const showDiscountRate = ref(false);
+const showForm = ref(true);
 
 const isMobile = ref(null);
 const windowWidth = ref(null);
@@ -323,6 +336,13 @@ onMounted(() => {
 	window.addEventListener("resize", checkScreen);
 });
 
+const formData = ref({
+	rate: false,
+	plan: '',
+	addons: [],
+})
+
+// ! started=================================================================
 const schema = [
 	object({
 		fullname: string().required("This field is required"),
@@ -333,6 +353,7 @@ const schema = [
 	}),
 	object({
 		plan: string().required("Please select a plan"),
+		rate: string(),
 	}),
 	object({
 		addons: array().of(string()).required("Please pick add-ons"),
@@ -341,7 +362,84 @@ const schema = [
 
 function onSubmit(formData) {
 	console.log(JSON.stringify(formData, null, 2));
+	// go to thank you page
+	showForm.value = false;
 }
+
+//! end ========================================================================
+
+
+const onChange = ($event) => {
+	if ($event.target.checked) {
+		showDiscountRate.value = true;
+		return;
+	}
+	showDiscountRate.value = false;
+	return;
+};
+
+
+//
+const selectPlan = ref([
+	{
+		name: 'Arcade',
+		image: 'icon-arcade.svg',
+		price: 9,
+		rate: "mo"
+	},
+	{
+		name: 'Advanced',
+		image: 'icon-advanced.svg',
+		price: 12,
+		rate: "mo"
+	},
+	{
+		name: 'Pro',
+		image: 'icon-pro.svg',
+		price: 15,
+		rate: "mo"
+	},
+])
+// const selectPlanRate = ref(false)
+const displayPlan = computed(() => {
+	if (!showDiscountRate.value) {
+		return selectPlan.value;
+	}
+	return [
+	{
+		name: 'Arcade',
+		image: 'icon-arcade.svg',
+		price: 90,
+		rate: 'yr'
+	},
+	{
+		name: 'Advanced',
+		image: 'icon-advanced.svg',
+		price: 120,
+		rate: 'yr'
+	},
+	{
+		name: 'pro',
+		image: 'icon-pro.svg',
+		price: 150,
+		rate: 'yr'
+	},
+	];
+})
+function getImageUrl(name) {
+  return new URL(`/src/assets/images/${name}`, import.meta.url).href
+}
+
+// ---------------------------------------------------
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped>
+.fade-enter-from,
+.fade-leave-to {
+	opacity: 0;
+}
+.fade-enter-active,
+.fade-leave-active {
+	transition: all 0.3s linear;
+}
+</style>
