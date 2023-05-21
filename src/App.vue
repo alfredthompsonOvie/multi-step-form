@@ -1,71 +1,64 @@
 <template>
 	<main>
 		<!-- Sidebar start -->
-		<aside class="tabContainer">
-			<button
-				type="button"
-				class="btn"
-				@click.prevent="activephase = 'personalInfo'"
-			>
-				<span class="btn--default">
-					<!-- :class="{ activeStep: activephase === 'personalInfo' }" -->
-					1
-				</span>
-				<div class="btn--description" v-if="!isMobile">
-					<p>step 1</p>
+		<aside class="tabContainer steps">
+			<section class="step">
+				<span
+					class="step__number--default"
+					:class="{ activeStep: currentStep === 0 }"
+				>
+					1</span
+				>
+				<section class="step__description" v-if="!isMobile">
+					<p class="step__title">step 1</p>
 					<p>your info</p>
-				</div>
-			</button>
-			<button
-				type="button"
-				class="btn"
-				@click.prevent="activephase = 'selectPlan'"
-			>
-				<span class="btn--default">
-					<!-- :class="{ activeStep: activephase === 'selectPlan' }" -->
-					2</span
+				</section>
+			</section>
+			<section class="step">
+				<span
+					class="step__number--default"
+					:class="{ activeStep: currentStep === 1 }"
 				>
-				<div class="btn--description" v-if="!isMobile">
-					<p>Step 2</p>
+					2
+				</span>
+				<section class="step__description" v-if="!isMobile">
+					<p class="step__title">step 2</p>
 					<p>Select plan</p>
-				</div>
-			</button>
-			<button
-				type="button"
-				class="btn"
-				@click.prevent="activephase = 'pickAddons'"
-			>
-				<span class="btn--default">
-					<!-- :class="{ activeStep: activephase === 'pickAddons' }" -->
-					3</span
+				</section>
+			</section>
+			<section class="step">
+				<span
+					class="step__number--default"
+					:class="{ activeStep: currentStep === 2 }"
 				>
-				<div class="btn--description" v-if="!isMobile">
-					<p>Step 3</p>
+					3
+				</span>
+				<section class="step__description" v-if="!isMobile">
+					<p class="step__title">step 3</p>
 					<p>Add-ons</p>
-				</div>
-			</button>
-			<button
-				type="button"
-				class="btn"
-				@click.prevent="activephase = 'summary'"
-			>
-				<span class="btn--default">
-					<!-- :class="{ activeStep: activephase === 'summary' }" -->
-					4</span
+				</section>
+			</section>
+			<section class="step">
+				<span
+					class="step__number--default"
+					:class="{ activeStep: currentStep === 3 }"
+					>4</span
 				>
-				<div class="btn--description" v-if="!isMobile">
-					<p>Step 4</p>
+				<section class="step__description" v-if="!isMobile">
+					<p class="step__title">step 4</p>
 					<p>Summary</p>
-				</div>
-			</button>
+				</section>
+			</section>
 		</aside>
 		<!-- Sidebar end -->
 
 		<!-- form wizard -->
-		<FormWizard 
-		:validation-schema="schema" 
-		@submit="onSubmit"
-		v-if="showForm"
+		<FormWizard
+			:validation-schema="schema"
+			@submit="onSubmit"
+			@step="handleStep"
+			:editStepCounter="editStepCounter"
+			v-if="showForm"
 		>
 			<!-- step 1 -->
 			<FormStep>
@@ -75,14 +68,14 @@
 				</p>
 				<section class="form__group">
 					<section class="form__control">
-						<label for="fullname">Name</label>
+						<label for="fullname" class="form__control--label">Name</label>
 						<Field
 							type="text"
 							name="fullname"
 							id="fullname"
 							placeholder="e.g. Stephen King"
 							class="form__field"
-							:class="{ 'form__field--error': ErrorMessage.message }"
+							:class="{ 'form__field--error': ErrorMessage.fullname }"
 						/>
 						<ErrorMessage name="fullname" class="error error--personal__info" />
 					</section>
@@ -95,8 +88,8 @@
 							id="email"
 							placeholder="e.g. stephenking@lorem.com"
 							class="form__field"
+							:class="{'form__field--error': ErrorMessage.email}"
 						/>
-						<!-- :class="{'form__field--error': ErrorMessage.name}" -->
 						<ErrorMessage name="email" class="error error--personal__info" />
 					</section>
 
@@ -140,13 +133,19 @@
 						<label :for="plan.name" class="plan--label">
 							<img :src="`${getImageUrl(plan.image)}`" :alt="plan.name" />
 							<section>
-								<p class="plan">{{ plan.name }}</p>
-								<p class="plan__price">${{ plan.price }}/{{ plan.rate }}</p>
-								<transition name="fade">
-									<p class="plan__discount" v-if="showDiscountRate">
+								<TransitionGroup name="fade">
+									<p class="plan" :key="plan.name">{{ plan.name }}</p>
+									<p class="plan__price" :key="plan.price">
+										${{ plan.price }}/{{ plan.rate }}
+									</p>
+									<p
+										class="plan__discount"
+										v-if="showDiscountRate"
+										key="discount"
+									>
 										2 months free
 									</p>
-								</transition>
+								</TransitionGroup>
 							</section>
 						</label>
 					</section>
@@ -256,49 +255,54 @@
 				<p>Double-check everything looks OK before confirming.</p>
 				<!-- Dynamically add subscription and add-on selections here -->
 				<section class="summary__list">
-					<!-- {{  store.getFormData }} -->
-					<section class="summary__item">
+					<section class="summary__item summary__item__plan">
 						<section>
-							<p>
-								<span>{{ store.getFormData.plan }}</span>
+							<p class="summary__item__plan__title">
+								<span>{{ store.getFormData.plan }}</span> 
 								<span>({{ store.getFormData.rate }})</span>
 							</p>
-							<button class="editFormBtn">Change</button>
+							<button
+								class="editFormBtn"
+								type="button"
+								@click.prevent="editForm"
+							>
+								Change
+							</button>
 						</section>
-						<p>
-
-							${{
-								store.getFormData.planPrice
-							}}/{{ formData.rate ? "yr" : "mo" }}
+						<p class="summary__item__plan__price">
+							${{ store.getFormData.planPrice }}/{{
+								formData.rate ? "yr" : "mo"
+							}}
 						</p>
 					</section>
+
 					<p
-						class="summary__item"
+						class="summary__item summary__item__addons"
 						v-for="addon in store.getFormData.addons"
 						:key="addon"
 					>
 						<span>{{ addon.name }}</span>
-						<span>+${{ addon.price }}/{{ formData.rate ? "yr" : "mo" }}</span>
-
+						<span class="summary__item__addons__price">+${{ addon.price }}/{{ formData.rate ? "yr" : "mo" }}</span>
 					</p>
 				</section>
 				<section class="summary__total">
 					<p>Total (per {{ formData.rate ? "year" : "month" }})</p>
-					<p class="total__rate">+${{store.getFormData.total}}/{{ formData.rate ? "yr" : "mo" }}</p>
+					<p class="total__rate">
+						+${{ store.getFormData.total }}/{{ formData.rate ? "yr" : "mo" }}
+					</p>
 				</section>
-
 			</FormStep>
 			<!-- step 4 -->
-
-			<!-- step 5 -->
-
-			<!-- step 5 -->
 		</FormWizard>
 		<!-- form wizard -->
 
 		<!-- Thank You -->
-		<ThankYou  v-else/>
+		<ThankYou v-else />
 	</main>
+	<!-- <div class="attribution">
+    Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>. 
+    Coded by <a href="https://www.linkedin.com/in/alfredthompsonovie/" target="_blank">Alfred Thompson Ovie</a>.
+  </div> -->
 </template>
 
 <script setup>
@@ -310,14 +314,15 @@ import FormWizard from "./components/multiStep/FormWizard.vue";
 import FormStep from "./components/multiStep/FormStep.vue";
 import { useFormValuesStore } from "./store/formValues";
 
-import  ThankYou  from '@/components/ThankYou.vue';
+import ThankYou from "@/components/ThankYou.vue";
 
 const store = useFormValuesStore();
 
-
-const activephase = ref("personalInfo");
+// const activephase = ref("personalInfo");
+const currentStep = ref(0);
 const showDiscountRate = ref(false);
 const showForm = ref(true);
+const editStepCounter = ref(0);
 
 const isMobile = ref(null);
 const windowWidth = ref(null);
@@ -338,9 +343,9 @@ onMounted(() => {
 
 const formData = ref({
 	rate: false,
-	plan: '',
+	plan: "",
 	addons: [],
-})
+});
 
 // ! started=================================================================
 const schema = [
@@ -365,9 +370,18 @@ function onSubmit(formData) {
 	// go to thank you page
 	showForm.value = false;
 }
+function handleStep(curr) {
+	currentStep.value = curr;
+}
+function editForm() {
+	if (editStepCounter.value) {
+		editStepCounter.value = 0;
+		return;
+	}
+	editStepCounter.value = 1;
+}
 
 //! end ========================================================================
-
 
 const onChange = ($event) => {
 	if ($event.target.checked) {
@@ -378,56 +392,55 @@ const onChange = ($event) => {
 	return;
 };
 
-
 //
 const selectPlan = ref([
 	{
-		name: 'Arcade',
-		image: 'icon-arcade.svg',
+		name: "Arcade",
+		image: "icon-arcade.svg",
 		price: 9,
-		rate: "mo"
+		rate: "mo",
 	},
 	{
-		name: 'Advanced',
-		image: 'icon-advanced.svg',
+		name: "Advanced",
+		image: "icon-advanced.svg",
 		price: 12,
-		rate: "mo"
+		rate: "mo",
 	},
 	{
-		name: 'Pro',
-		image: 'icon-pro.svg',
+		name: "Pro",
+		image: "icon-pro.svg",
 		price: 15,
-		rate: "mo"
+		rate: "mo",
 	},
-])
+]);
 // const selectPlanRate = ref(false)
 const displayPlan = computed(() => {
 	if (!showDiscountRate.value) {
 		return selectPlan.value;
 	}
 	return [
-	{
-		name: 'Arcade',
-		image: 'icon-arcade.svg',
-		price: 90,
-		rate: 'yr'
-	},
-	{
-		name: 'Advanced',
-		image: 'icon-advanced.svg',
-		price: 120,
-		rate: 'yr'
-	},
-	{
-		name: 'pro',
-		image: 'icon-pro.svg',
-		price: 150,
-		rate: 'yr'
-	},
+		{
+			name: "Arcade",
+			image: "icon-arcade.svg",
+			price: 90,
+			rate: "yr",
+		},
+		{
+			name: "Advanced",
+			image: "icon-advanced.svg",
+			price: 120,
+			rate: "yr",
+		},
+		{
+			name: "pro",
+			image: "icon-pro.svg",
+			price: 150,
+			rate: "yr",
+		},
 	];
-})
+});
 function getImageUrl(name) {
-  return new URL(`/src/assets/images/${name}`, import.meta.url).href
+	return new URL(`/src/assets/images/${name}`, import.meta.url).href;
 }
 
 // ---------------------------------------------------
@@ -437,9 +450,14 @@ function getImageUrl(name) {
 .fade-enter-from,
 .fade-leave-to {
 	opacity: 0;
+	transform: translateY(30px);
 }
 .fade-enter-active,
+.fade-leave-active,
+.fade-move {
+	transition: all 0.5s ease;
+}
 .fade-leave-active {
-	transition: all 0.3s linear;
+	position: absolute;
 }
 </style>
