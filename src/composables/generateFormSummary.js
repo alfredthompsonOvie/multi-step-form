@@ -61,7 +61,7 @@ function searchPlan(p, rate) {
 }
 
 function calTotal(obj1, obj2) {
-	console.log(obj1, obj2);
+	// console.log(obj1, obj2);
 	let total = parseInt(obj1) + obj2
 		.map(e => parseInt(e.price))
 		.reduce((acc, curr)=> acc + curr, 0);
@@ -75,31 +75,30 @@ function generateFormSummary(values) {
 
 	if (!values.rate) {
 		summary = {
+			name: values.fullname,
+			email: values.email,
+			tel: values.phoneNumber,
       plan: values.plan,
       planPrice: searchPlan(values.plan, 1),
-      // PlanPrice: plan.value.filter((e) => {
-      //   if (e.name === values.plan) {
-      //     return e.price
-      //   }
-      // }),
 			rate: "Monthly",
 			addons: searchArray(values, 1),
 			total: calTotal(searchPlan(values.plan, 1), searchArray(values, 1))
 		};
 
-    // console.log('from composables if rate = false', summary);
 		return summary;
 	}
   
 	summary = {
+		name: values.fullname,
+		email: values.email,
+		tel: values.phoneNumber,
 		plan: values.plan,
 		planPrice: searchPlan(values.plan, 10),
 		rate: "Yearly",
 		addons: searchArray(values, 10),
 		total: calTotal(searchPlan(values.plan, 10), searchArray(values, 10))
 	};
-  
-  // console.log('from composables if rate = true', summary);
+
 	return summary;
 }
 

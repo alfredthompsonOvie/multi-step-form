@@ -50,7 +50,7 @@ const props = defineProps({
     type: Number
   }
 });
-const emit = defineEmits(['submit', 'step']);
+const emit = defineEmits(['submit', 'step', 'errors']);
 
 const currentStepIdx = ref(0);
 const stepCounter = ref(0);
@@ -90,7 +90,7 @@ watchEffect(() => {
 
 const currentSchema = computed(()=>props.validationSchema[currentStepIdx.value])
 
-const { handleSubmit } = useForm({
+const { handleSubmit, errors } = useForm({
   
 	validationSchema: currentSchema,
 
@@ -111,6 +111,9 @@ const onSubmit = handleSubmit((values) => {
   // Let the parent know the form was filled across all steps
   emit('submit', values);
 });
+watchEffect(() => {
+  emit('errors', errors.value);
+})
 
 
 </script>

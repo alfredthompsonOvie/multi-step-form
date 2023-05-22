@@ -75,7 +75,7 @@ main {
 	align-items: flex-start;
 	justify-content: center;
 	padding-top: 2em;
-	flex-wrap: wrap;
+	/* flex-wrap: wrap; */
 }
 button {
 	border: 0;
@@ -84,6 +84,7 @@ button {
 	color: var(--White);
 	cursor: pointer;
 	font-family: inherit;
+	transition: all .3s ease;
 }
 .step {
 	color: var(--White);
@@ -234,6 +235,9 @@ label {
 	cursor: pointer;
 	transition: all 0.5s linear;
 }
+.plan--label:hover {
+	border: 1px solid var(--MarineBlue);
+}
 .plan--checkbox {
 	position: absolute;
 	opacity: 0;
@@ -262,12 +266,17 @@ label {
 }
 .error--plan {
 	position: absolute;
-	/* top: 11em; */
 	bottom: -2em;
 	left: 50%;
 	transform: translateX(-50%);
 	color: var(--StrawberryRed);
-	/* font-size: .9rem; */
+}
+.error--addons {
+	position: absolute;
+	bottom: -1em;
+	left: 50%;
+	transform: translateX(-50%);
+	color: var(--StrawberryRed);
 }
 
 /* =================================================================== */
@@ -350,6 +359,9 @@ label {
 	border: 1px solid var(--MarineBlue);
 	background-color: var(--Magnolia);
 }
+.addons__label:hover {
+	border: 1px solid var(--MarineBlue);
+}
 .label__title {
 	font-size: 1rem;
 	margin-bottom: 0.1em;
@@ -377,6 +389,10 @@ label {
 .btn--goBack {
 	color: var(--CoolGray);
 }
+.btn--goBack:hover {
+	color: var(--MarineBlue);
+	font-weight: var(--fw-bold);
+}
 .btn--next,
 .btn--confirm {
 	padding: 1em 2em;
@@ -385,8 +401,15 @@ label {
 .btn--next {
 	background-color: var(--MarineBlue);
 }
+.btn--next:hover {
+	background-color: var(--PurplishBlue);
+}
 .btn--confirm {
 	background-color: var(--PurplishBlue);
+	/* transition: all .3s ease; */
+}
+.btn--confirm:hover {
+	opacity: .8;
 }
 
 /* ! */

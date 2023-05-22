@@ -57,6 +57,7 @@
 			:validation-schema="schema"
 			@submit="onSubmit"
 			@step="handleStep"
+			@errors="displayError"
 			:editStepCounter="editStepCounter"
 			v-if="showForm"
 		>
@@ -75,7 +76,7 @@
 							id="fullname"
 							placeholder="e.g. Stephen King"
 							class="form__field"
-							:class="{ 'form__field--error': ErrorMessage.fullname }"
+							:class="{ 'form__field--error': fullnameError }"
 						/>
 						<ErrorMessage name="fullname" class="error error--personal__info" />
 					</section>
@@ -88,7 +89,7 @@
 							id="email"
 							placeholder="e.g. stephenking@lorem.com"
 							class="form__field"
-							:class="{'form__field--error': ErrorMessage.email}"
+							:class="{'form__field--error': emailError }"
 						/>
 						<ErrorMessage name="email" class="error error--personal__info" />
 					</section>
@@ -101,6 +102,7 @@
 							id="phoneNumber"
 							placeholder="e.g. +1 234 567 890"
 							class="form__field"
+							:class="{'form__field--error': phoneNumberError }"
 						/>
 						<ErrorMessage
 							name="phoneNumber"
@@ -199,7 +201,7 @@
 						value="Online service"
 						class="addons__checkbox"
 						v-model="formData.addons"
-					/>
+						/>
 					<label for="onlineService" class="addons__label">
 						<section>
 							<h1 class="label__title">Online service</h1>
@@ -217,7 +219,7 @@
 						value="Larger storage"
 						class="addons__checkbox"
 						v-model="formData.addons"
-					/>
+						/>
 					<label for="largerStorage" class="addons__label">
 						<section>
 							<h1 class="label__title">Larger storage</h1>
@@ -235,7 +237,7 @@
 						value="Customizable profile"
 						class="addons__checkbox"
 						v-model="formData.addons"
-					/>
+						/>
 					<label for="customizableProfile" class="addons__label">
 						<section>
 							<h1 class="label__title">Customizable Profile</h1>
@@ -245,7 +247,7 @@
 					</label>
 				</section>
 
-				<ErrorMessage name="addons" />
+				<ErrorMessage name="addons" class="error--addons"/>
 			</FormStep>
 			<!-- step 3 -->
 
@@ -318,11 +320,10 @@ import ThankYou from "@/components/ThankYou.vue";
 
 const store = useFormValuesStore();
 
-// const activephase = ref("personalInfo");
 const currentStep = ref(0);
-const showDiscountRate = ref(false);
-const showForm = ref(true);
-const editStepCounter = ref(0);
+const showDiscountRate = ref(false); // SHOWS DISCOUNT RATE TEXT ON PLAN STEP
+const showForm = ref(true); //TOGGLE BETWEEN FORM AND THANK YOU COMPONENT
+const editStepCounter = ref(0); //THE CHANGE BTN ON SUMMARY PAGE
 
 const isMobile = ref(null);
 const windowWidth = ref(null);
@@ -341,9 +342,10 @@ onMounted(() => {
 	window.addEventListener("resize", checkScreen);
 });
 
+// THIS IS V-MODELLED INTO THE FORM AND IT MAKES VALIDATION ON ADDONS STEP WORK============================================================================
 const formData = ref({
 	rate: false,
-	plan: "",
+	// plan: "",
 	addons: [],
 });
 
@@ -361,18 +363,26 @@ const schema = [
 		rate: string(),
 	}),
 	object({
-		addons: array().of(string()).required("Please pick add-ons"),
+		addons: array().of(string()).min(1, "Please pick add-ons")
 	}),
 ];
 
-function onSubmit(formData) {
-	console.log(JSON.stringify(formData, null, 2));
+function onSubmit() {
+	// console.log(JSON.stringify(formData, null, 2));
+	// console.log(store.getFormData);
+	const data = store.getFormData;
+	console.log(JSON.stringify(data, null, 2));
+
 	// go to thank you page
 	showForm.value = false;
 }
+//! end ========================================================================
+
+// INDICATES CURRENT STEP=======================================================
 function handleStep(curr) {
 	currentStep.value = curr;
 }
+// CHANGE BUTTON ON SUMMARY STEP================================================
 function editForm() {
 	if (editStepCounter.value) {
 		editStepCounter.value = 0;
@@ -381,8 +391,27 @@ function editForm() {
 	editStepCounter.value = 1;
 }
 
-//! end ========================================================================
+// DISPLAY ERRORS ON PERSONAL INFO STEP=========================================
+const fullnameError = ref(null);
+const emailError = ref(null);
+const phoneNumberError = ref(null);
 
+function displayError(err) {
+	if (err) {
+		const { fullname, email, phoneNumber } = err;
+		
+		fullnameError.value = fullname;
+		emailError.value = email;
+		phoneNumberError.value = phoneNumber;
+		return;
+	}
+	fullnameError.value = null;
+	emailError.value = null;
+	phoneNumberError.value = null;
+	return;
+}
+
+// SHOWS DISCOUNT TEXT ON SELECT PLAN STEP===================================== 
 const onChange = ($event) => {
 	if ($event.target.checked) {
 		showDiscountRate.value = true;
@@ -392,7 +421,7 @@ const onChange = ($event) => {
 	return;
 };
 
-//
+// DYNAMICALLY RENDER PLANS ON SELECT PLAN STEP=================================
 const selectPlan = ref([
 	{
 		name: "Arcade",
@@ -413,7 +442,7 @@ const selectPlan = ref([
 		rate: "mo",
 	},
 ]);
-// const selectPlanRate = ref(false)
+
 const displayPlan = computed(() => {
 	if (!showDiscountRate.value) {
 		return selectPlan.value;
@@ -432,7 +461,7 @@ const displayPlan = computed(() => {
 			rate: "yr",
 		},
 		{
-			name: "pro",
+			name: "Pro",
 			image: "icon-pro.svg",
 			price: 150,
 			rate: "yr",

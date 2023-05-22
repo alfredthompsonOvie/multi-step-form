@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { computed, ref, } from 'vue'
 
-export const useFormValuesStore = defineStore('formData', () => {
+export const useFormValuesStore = defineStore('formValues', () => {
   const formData = ref([]);
 
   // const formattedFormData = ref([]);
