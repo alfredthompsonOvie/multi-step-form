@@ -1,18 +1,32 @@
 <template>
-  <section class="thankYou">
-  <!-- Step 5 start -->
-    <img src="@/assets/images/icon-thank-you.svg" alt="checkmark icon">
-    <h1>Thank you!</h1>
-    <p>
-      Thanks for confirming your subscription! We hope you have fun 
-      using our platform. If you ever need support, please feel free 
-      to email us at support@loremgaming.com.
-    </p>
-  <!-- Step 5 end -->
+  <section class="feedback">
+    <section class="thankYou">
+    <!-- Step 5 start -->
+      <img src="@/assets/images/icon-thank-you.svg" alt="checkmark icon">
+      <h1>Thank you!</h1>
+      <p>
+        Thanks for confirming your subscription! We hope you have fun 
+        using our platform. If you ever need support, please feel free 
+        to email us at support@loremgaming.com.
+      </p>
+    <!-- Step 5 end -->
+    </section>
   </section>
 </template>
 
 <script setup>
+import {  onMounted } from "vue";
+import { gsap } from "gsap";
+
+onMounted(() => {
+	gsap.fromTo(".thankYou", {
+		y: 30,
+		autoAlpha: 0.01,
+  }, {
+    y: 0,
+    autoAlpha: 1,
+  })
+});
 
 </script>
 
@@ -27,7 +41,7 @@
   margin-bottom: 2em;
   border-radius: 8px;
   /* position: relative; */
-  top: -5em;
+  /* top: -3em; */
   background-color: var(--White);
   text-align: center;
   /* background-color: red; */
@@ -62,17 +76,17 @@ p {
 }
 @media (min-width: 810px) {
   .thankYou {
-    grid-column: 2;
-	position: relative;
-	min-height: calc(100vh - 200px);
-  border-radius: 8px;
-  min-height: 300px;
-  padding: 2em 1.5em;
-  margin-inline: 0em;
-  margin-bottom: 0em;
-  border-radius: 8px;
+    /* grid-column: 2; */
+	/* position: relative; */
+	/* min-height: calc(100vh - 200px); */
+  /* border-radius: 8px; */
+  /* min-height: 300px; */
+  /* padding: 2em 1.5em; */
+  /* margin-inline: 0em; */
+  margin: 0em;
+  /* border-radius: 8px; */
   /* position: relative; */
-  top: 0em;
+  /* top: 0em; */
   /* background-color: var(--White); */
 
 }

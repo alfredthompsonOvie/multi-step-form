@@ -35,3 +35,10 @@ The designs were created to the following widths:
 
 - Family: [Ubuntu](https://fonts.google.com/specimen/Ubuntu)
 - Weights: 400, 500, 700
+
+
+#2f2d47
+#f9f9f9
+#f0c8aa
+#e7975c
+#de660e

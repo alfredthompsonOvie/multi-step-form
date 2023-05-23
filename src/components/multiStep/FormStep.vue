@@ -1,7 +1,12 @@
 <template>
+	<TransitionGroup 
+	name="formStep" 
+	mode="out-in"
+	>
 	<section v-if="shouldShow" class="form__step">
-    <slot />
+		<slot />
 	</section>
+</TransitionGroup>
 </template>
 
 <script setup>
@@ -29,7 +34,11 @@ const shouldShow = computed(() => {
 }
 
 .formStep-enter-active,
+.formStep-move {
+	transition: all 0.5s ease;
+}
 .formStep-leave-active {
-	transition: all 0.3s ease;
+	position: absolute;
+	opacity: 0;
 }
 </style>

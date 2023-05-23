@@ -89,7 +89,7 @@
 							id="email"
 							placeholder="e.g. stephenking@lorem.com"
 							class="form__field"
-							:class="{'form__field--error': emailError }"
+							:class="{ 'form__field--error': emailError }"
 						/>
 						<ErrorMessage name="email" class="error error--personal__info" />
 					</section>
@@ -102,7 +102,7 @@
 							id="phoneNumber"
 							placeholder="e.g. +1 234 567 890"
 							class="form__field"
-							:class="{'form__field--error': phoneNumberError }"
+							:class="{ 'form__field--error': phoneNumberError }"
 						/>
 						<ErrorMessage
 							name="phoneNumber"
@@ -152,7 +152,9 @@
 						</label>
 					</section>
 
-					<ErrorMessage name="plan" class="error--plan" />
+					<Transition name="slideUp">
+						<ErrorMessage name="plan" class="error--plan" />
+					</Transition>
 				</section>
 
 				<section class="rate__toggler">
@@ -167,7 +169,6 @@
 							v-model="formData.rate"
 							rules="string|required"
 						>
-							<!-- :unchecked-value="false" -->
 							<input
 								v-bind="field"
 								type="checkbox"
@@ -180,7 +181,6 @@
 						</Field>
 						<label for="rate" class="toggle__rate__label"></label>
 					</section>
-					<ErrorMessage name="rate" class="error--plan" />
 
 					<p>Yearly</p>
 				</section>
@@ -201,7 +201,7 @@
 						value="Online service"
 						class="addons__checkbox"
 						v-model="formData.addons"
-						/>
+					/>
 					<label for="onlineService" class="addons__label">
 						<section>
 							<h1 class="label__title">Online service</h1>
@@ -219,7 +219,7 @@
 						value="Larger storage"
 						class="addons__checkbox"
 						v-model="formData.addons"
-						/>
+					/>
 					<label for="largerStorage" class="addons__label">
 						<section>
 							<h1 class="label__title">Larger storage</h1>
@@ -237,7 +237,7 @@
 						value="Customizable profile"
 						class="addons__checkbox"
 						v-model="formData.addons"
-						/>
+					/>
 					<label for="customizableProfile" class="addons__label">
 						<section>
 							<h1 class="label__title">Customizable Profile</h1>
@@ -247,7 +247,9 @@
 					</label>
 				</section>
 
-				<ErrorMessage name="addons" class="error--addons"/>
+				<Transition name="slideUp">
+					<ErrorMessage name="addons" class="error--addons" />
+				</Transition>
 			</FormStep>
 			<!-- step 3 -->
 
@@ -260,7 +262,7 @@
 					<section class="summary__item summary__item__plan">
 						<section>
 							<p class="summary__item__plan__title">
-								<span>{{ store.getFormData.plan }}</span> 
+								<span>{{ store.getFormData.plan }}</span>
 								<span>({{ store.getFormData.rate }})</span>
 							</p>
 							<button
@@ -284,7 +286,9 @@
 						:key="addon"
 					>
 						<span>{{ addon.name }}</span>
-						<span class="summary__item__addons__price">+${{ addon.price }}/{{ formData.rate ? "yr" : "mo" }}</span>
+						<span class="summary__item__addons__price"
+							>+${{ addon.price }}/{{ formData.rate ? "yr" : "mo" }}</span
+						>
 					</p>
 				</section>
 				<section class="summary__total">
@@ -308,7 +312,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, onUpdated, ref } from "vue";
 import { object, string, number, array } from "yup";
 import { Field, ErrorMessage } from "vee-validate";
 
@@ -317,6 +321,9 @@ import FormStep from "./components/multiStep/FormStep.vue";
 import { useFormValuesStore } from "./store/formValues";
 
 import ThankYou from "@/components/ThankYou.vue";
+
+import { gsap } from "gsap";
+
 
 const store = useFormValuesStore();
 
@@ -341,6 +348,62 @@ onMounted(() => {
 	checkScreen();
 	window.addEventListener("resize", checkScreen);
 });
+onMounted(() => {
+	const tl = gsap.timeline({
+		onComplete: () => {
+			gsap.to([
+				'main',
+				"aside",
+				'.step',
+				".form__contents",
+				".form__navigation > *",
+			], {
+				clearProps: true
+			})
+		}
+	});
+	tl
+		.from('main', {
+			autoAlpha: 0.01,
+			x: 50,
+		})
+		.fromTo('aside', {
+			autoAlpha: 0.01,
+			clipPath: "polygon(0 0, 0 0, 0 100%, 0 100%)",
+
+		}, {
+			autoAlpha: 1,
+			clipPath: "polygon(100% 0, 0 0, 0 100%, 100% 100%)"
+		})
+		.from(".step", {
+			autoAlpha: 0.01,
+			y: 20,
+			stagger: 0.2
+		})
+		.from(".form__contents", {
+			autoAlpha: 0.01,
+			y: 20,
+		}, "<")
+		.from(".form__navigation > *", {
+			x: -20,
+			autoAlpha: 0.01,
+		}, "-=0.8")
+	// gsap.from(".form__contents", {
+	// 	x: 100,
+	// 	autoAlpha: 0.01,
+	// });
+	// gsap.from(".thankYou", {
+	// 	x: 30,
+	// 	autoAlpha: 0.01,
+	// })
+});
+onUpdated(() => {
+	// gsap.from(".form__contents", {
+	// 	y: 100,
+	// 	autoAlpha: 0.01,
+	// });
+		// console.log('App updated');
+})
 
 // THIS IS V-MODELLED INTO THE FORM AND IT MAKES VALIDATION ON ADDONS STEP WORK============================================================================
 const formData = ref({
@@ -363,7 +426,7 @@ const schema = [
 		rate: string(),
 	}),
 	object({
-		addons: array().of(string()).min(1, "Please pick add-ons")
+		addons: array().of(string()).min(1, "Please pick add-ons"),
 	}),
 ];
 
@@ -399,7 +462,7 @@ const phoneNumberError = ref(null);
 function displayError(err) {
 	if (err) {
 		const { fullname, email, phoneNumber } = err;
-		
+
 		fullnameError.value = fullname;
 		emailError.value = email;
 		phoneNumberError.value = phoneNumber;
@@ -411,7 +474,7 @@ function displayError(err) {
 	return;
 }
 
-// SHOWS DISCOUNT TEXT ON SELECT PLAN STEP===================================== 
+// SHOWS DISCOUNT TEXT ON SELECT PLAN STEP=====================================
 const onChange = ($event) => {
 	if ($event.target.checked) {
 		showDiscountRate.value = true;
@@ -488,5 +551,15 @@ function getImageUrl(name) {
 }
 .fade-leave-active {
 	position: absolute;
+}
+
+.slideUp-enter-from,
+.slideUp-leave-to {
+	opacity: 0;
+	transform: translateY(30px);
+}
+.slideUp-enter-active,
+.slideUp-leave-active {
+	transition: all 0.5s ease;
 }
 </style>
