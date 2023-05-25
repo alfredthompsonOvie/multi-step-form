@@ -51,7 +51,10 @@ onMounted(() => {
   flex-direction: column;
 }
 img { 
-  width: 3.5em;
+  width: 5em;
+  height: 5em;
+  border-radius: 50%;
+  margin-bottom: 1.5em;
 }
 p {
   --PurplishBlue: hsl(243, 100%, 62%);

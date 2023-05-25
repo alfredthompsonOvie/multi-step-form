@@ -192,7 +192,7 @@
 			<FormStep>
 				<h1>Pick add-ons</h1>
 				<p>Add-ons help enhance your gaming experience.</p>
-
+<!-- 
 				<section class="form__group__addons">
 					<Field
 						type="checkbox"
@@ -244,6 +244,28 @@
 							<p>Custom theme on your profile</p>
 						</section>
 						<p class="add_ons__price">+$2/mo</p>
+					</label>
+				</section> -->
+
+				<section 
+				class="form__group__addons" 
+				v-for="addons in displayAddons"
+				:key="addons.name"
+				>
+					<Field
+						type="checkbox"
+						name="addons"
+						:id="addons.name"
+						:value="addons.name"
+						class="addons__checkbox"
+						v-model="formData.addons"
+					/>
+					<label :for="addons.name" class="addons__label">
+						<section>
+							<h1 class="label__title">{{ addons.name }}</h1>
+							<p>{{ addons.desc }}</p>
+						</section>
+						<p class="add_ons__price">+${{ addons.price}}/{{ addons.rate }}</p>
 					</label>
 				</section>
 
@@ -312,7 +334,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, onUpdated, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { object, string, number, array } from "yup";
 import { Field, ErrorMessage } from "vee-validate";
 
@@ -352,10 +374,12 @@ onMounted(() => {
 	const tl = gsap.timeline({
 		onComplete: () => {
 			gsap.to([
+				"#app",
 				'main',
 				"aside",
 				'.step',
 				".form__contents",
+				".form__navigation",
 				".form__navigation > *",
 			], {
 				clearProps: true
@@ -363,6 +387,10 @@ onMounted(() => {
 		}
 	});
 	tl
+		.from('#app', {
+			autoAlpha: 1,
+			// x: 50,
+		})
 		.from('main', {
 			autoAlpha: 0.01,
 			x: 50,
@@ -384,26 +412,15 @@ onMounted(() => {
 			autoAlpha: 0.01,
 			y: 20,
 		}, "<")
+		.from(".form__navigation", {
+			autoAlpha: 0.01,
+		}, "-=0.8")
 		.from(".form__navigation > *", {
 			x: -20,
 			autoAlpha: 0.01,
-		}, "-=0.8")
-	// gsap.from(".form__contents", {
-	// 	x: 100,
-	// 	autoAlpha: 0.01,
-	// });
-	// gsap.from(".thankYou", {
-	// 	x: 30,
-	// 	autoAlpha: 0.01,
-	// })
+		}, "<")
 });
-onUpdated(() => {
-	// gsap.from(".form__contents", {
-	// 	y: 100,
-	// 	autoAlpha: 0.01,
-	// });
-		// console.log('App updated');
-})
+
 
 // THIS IS V-MODELLED INTO THE FORM AND IT MAKES VALIDATION ON ADDONS STEP WORK============================================================================
 const formData = ref({
@@ -531,6 +548,56 @@ const displayPlan = computed(() => {
 		},
 	];
 });
+// DYNAMICALLY RENDER ADDONS ON SELECT ADDONS STEP==============================
+const selectAddons = ref([
+	{
+		name: "Online service",
+		desc: "Access to multiplayer games",
+		price: 1,
+		rate: "mo",
+	},
+	{
+		name: "Larger storage",
+		desc: "Extra 1TB of cloud save",
+		price: 2,
+		rate: "mo",
+	},
+	{
+		name: "Customizable profile",
+		desc: "Custom theme on your profile",
+		price: 2,
+		rate: "mo",
+	},
+]);
+const displayAddons = computed(() => {
+	if (!showDiscountRate.value) {
+		return selectAddons.value;
+	}
+	return [
+		{
+			name: "Online service",
+			desc: "Access to multiplayer games",
+			price: 10,
+			rate: "yr",
+		},
+		{
+			name: "Larger storage",
+			desc: "Extra 1TB of cloud save",
+			price: 20,
+			rate: "yr",
+		},
+		{
+			name: "Customizable profile",
+			desc: "Custom theme on your profile",
+			price: 20,
+			rate: "yr",
+		},
+	];
+});
+
+
+
+
 function getImageUrl(name) {
 	return new URL(`/src/assets/images/${name}`, import.meta.url).href;
 }
