@@ -54,13 +54,56 @@ main {
 	grid-template-rows: 150px 50px auto;
 	/* background-color: green; */
 }
+.attributionContainer {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 99;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 1em;
+}
 .attribution {
-	font-size: 11px;
+	background-color: var(--PurplishBlue);
+	font-size: 1.2rem;
+	line-height: 1.5;
 	text-align: center;
-	padding: 1.5em 0;
+	padding: 2em 2em 1.5em;
+	border-radius: 8px;
+	color: var(--LightBlue);
+	box-shadow: 1px 5px 10px rgba(0, 0, 0, 0.4);
+	position: relative;
+	z-index: 80;
+	overflow: hidden;
 }
 .attribution a {
-	color: hsl(228, 45%, 44%);
+	/* color: hsl(228, 45%, 44%); */
+	color: var(--MarineBlue);
+}
+ul.slide {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	list-style: none;
+}
+ul.slide li {
+	/* background-color: red; */
+	background-color: rgba(0, 0, 0, 0.4);
+	height: 100%;
+	width: 20%;
+}
+.attributionBtn {
+	position: absolute;
+	top: 0;
+	right: 0em;
+	background-color: var(--StrawberryRed);
+	/* cursor: pointer; */
 }
 button {
 	border: 0;
@@ -144,7 +187,7 @@ form {
 	position: relative;
 	overflow: hidden;
 }
-.feedback{
+.feedback {
 	grid-row: 2/-1;
 	grid-column: 1/-1;
 	position: relative;

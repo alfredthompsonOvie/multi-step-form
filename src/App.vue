@@ -1,4 +1,40 @@
 <template>
+	<transition 
+	name="slide" 
+	:css="false"
+	@enter="onEnter"
+	>
+	<!-- @leave="onLeave"  -->
+		<div class="attributionContainer" v-if="isloaded">
+			<div class="attribution">
+				<p>
+					Challenge by
+				<a href="https://www.frontendmentor.io?ref=challenge" target="_blank"
+					>Frontend Mentor.</a
+				>
+				</p>
+				<p>
+					Coded by
+					<a
+						href="https://www.linkedin.com/in/alfredthompsonovie/"
+						target="_blank"
+						>Alfred Thompson Ovie.</a
+					>
+				</p>
+				<button 
+				class="attributionBtn"
+				@click.prevent="isloaded = false"
+				>x</button>
+			</div>
+			<ul class="slide">
+				<li class="slide__li"></li>
+				<li class="slide__li"></li>
+				<li class="slide__li"></li>
+				<li class="slide__li"></li>
+				<li class="slide__li"></li>
+			</ul>
+		</div>
+	</transition>
 	<main>
 		<!-- Sidebar start -->
 		<aside class="tabContainer steps">
@@ -192,7 +228,7 @@
 			<FormStep>
 				<h1>Pick add-ons</h1>
 				<p>Add-ons help enhance your gaming experience.</p>
-<!-- 
+				<!-- 
 				<section class="form__group__addons">
 					<Field
 						type="checkbox"
@@ -247,10 +283,10 @@
 					</label>
 				</section> -->
 
-				<section 
-				class="form__group__addons" 
-				v-for="addons in displayAddons"
-				:key="addons.name"
+				<section
+					class="form__group__addons"
+					v-for="addons in displayAddons"
+					:key="addons.name"
 				>
 					<Field
 						type="checkbox"
@@ -265,7 +301,7 @@
 							<h1 class="label__title">{{ addons.name }}</h1>
 							<p>{{ addons.desc }}</p>
 						</section>
-						<p class="add_ons__price">+${{ addons.price}}/{{ addons.rate }}</p>
+						<p class="add_ons__price">+${{ addons.price }}/{{ addons.rate }}</p>
 					</label>
 				</section>
 
@@ -327,10 +363,6 @@
 		<!-- Thank You -->
 		<ThankYou v-else />
 	</main>
-	<!-- <div class="attribution">
-    Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>. 
-    Coded by <a href="https://www.linkedin.com/in/alfredthompsonovie/" target="_blank">Alfred Thompson Ovie</a>.
-  </div> -->
 </template>
 
 <script setup>
@@ -346,13 +378,13 @@ import ThankYou from "@/components/ThankYou.vue";
 
 import { gsap } from "gsap";
 
-
 const store = useFormValuesStore();
 
 const currentStep = ref(0);
 const showDiscountRate = ref(false); // SHOWS DISCOUNT RATE TEXT ON PLAN STEP
 const showForm = ref(true); //TOGGLE BETWEEN FORM AND THANK YOU COMPONENT
 const editStepCounter = ref(0); //THE CHANGE BTN ON SUMMARY PAGE
+const isloaded = ref(false);
 
 const isMobile = ref(null);
 const windowWidth = ref(null);
@@ -369,59 +401,107 @@ function checkScreen() {
 onMounted(() => {
 	checkScreen();
 	window.addEventListener("resize", checkScreen);
+	runPageAnimation();
+	
 });
-onMounted(() => {
+
+
+const runPageAnimation = () => {
 	const tl = gsap.timeline({
 		onComplete: () => {
-			gsap.to([
-				"#app",
-				'main',
-				"aside",
-				'.step',
-				".form__contents",
-				".form__navigation",
-				".form__navigation > *",
-			], {
-				clearProps: true
-			})
-		}
+			isloaded.value = true;
+			setTimeout(()=> isloaded.value = false, 4000)
+			gsap.to(
+				[
+					"#app",
+					"main",
+					"aside",
+					".step",
+					".form__contents",
+					".form__navigation",
+					".form__navigation > *",
+				],
+				{
+					clearProps: true,
+				}
+			);
+		},
 	});
-	tl
-		.from('#app', {
-			autoAlpha: 1,
-			// x: 50,
-		})
-		.from('main', {
+	tl.from("#app", {
+		autoAlpha: 1,
+		// x: 50,
+	})
+		.from("main", {
 			autoAlpha: 0.01,
 			x: 50,
 		})
-		.fromTo('aside', {
-			autoAlpha: 0.01,
-			clipPath: "polygon(0 0, 0 0, 0 100%, 0 100%)",
-
-		}, {
-			autoAlpha: 1,
-			clipPath: "polygon(100% 0, 0 0, 0 100%, 100% 100%)"
-		})
+		.fromTo(
+			"aside",
+			{
+				autoAlpha: 0.01,
+				clipPath: "polygon(0 0, 0 0, 0 100%, 0 100%)",
+			},
+			{
+				autoAlpha: 1,
+				clipPath: "polygon(100% 0, 0 0, 0 100%, 100% 100%)",
+			}
+		)
 		.from(".step", {
 			autoAlpha: 0.01,
 			y: 20,
-			stagger: 0.2
+			stagger: 0.2,
 		})
-		.from(".form__contents", {
-			autoAlpha: 0.01,
+		.from(
+			".form__contents",
+			{
+				autoAlpha: 0.01,
+				y: 20,
+			},
+			"<"
+		)
+		.from(
+			".form__navigation",
+			{
+				autoAlpha: 0.01,
+			},
+			"-=0.8"
+		)
+		.from(
+			".form__navigation > *",
+			{
+				x: -20,
+				autoAlpha: 0.01,
+			},
+			"<"
+		);
+}
+const onEnter = (el, done) => {
+	const li = el.querySelectorAll('.slide__li');
+	const tl = gsap.timeline()
+	tl
+		.from(li, {
+		x: -10,
+		autoAlpha: 0.01,
+		stagger: 0.2,
+		ease: 'circ',
+		})
+		.from('.attribution', {
 			y: 20,
-		}, "<")
-		.from(".form__navigation", {
 			autoAlpha: 0.01,
-		}, "-=0.8")
-		.from(".form__navigation > *", {
-			x: -20,
-			autoAlpha: 0.01,
-		}, "<")
-});
-
-
+			onComplete: done,
+			ease: 'circ',
+		
+	})
+ }
+// const onLeave = (el, done) => {
+// 	const preloader = el.querySelector('.attributionContainer');
+// 	gsap.from(preloader, {
+// 		y: 20,
+// 		autoAlpha: 0.01,
+// 		ease: 'circ',
+// 		onComplete: done,
+// 	})
+//  }
 // THIS IS V-MODELLED INTO THE FORM AND IT MAKES VALIDATION ON ADDONS STEP WORK============================================================================
 const formData = ref({
 	rate: false,
@@ -448,8 +528,6 @@ const schema = [
 ];
 
 function onSubmit() {
-	// console.log(JSON.stringify(formData, null, 2));
-	// console.log(store.getFormData);
 	const data = store.getFormData;
 	console.log(JSON.stringify(data, null, 2));
 
@@ -594,9 +672,6 @@ const displayAddons = computed(() => {
 		},
 	];
 });
-
-
-
 
 function getImageUrl(name) {
 	return new URL(`/src/assets/images/${name}`, import.meta.url).href;
