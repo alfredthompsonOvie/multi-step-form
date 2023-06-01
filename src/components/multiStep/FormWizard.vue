@@ -1,7 +1,6 @@
 <template>
 	<form @submit="onSubmit">
 		<section class="form__contents">
-			<!-- <section class="select__plan"></section> -->
 			<slot />
 		</section>
 

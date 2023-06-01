@@ -23,7 +23,6 @@
 	--Alabaster: hsl(231, 100%, 99%);
 	--White: hsl(0, 0%, 100%);
 
-	/* - Family: [Ubuntu](https://fonts.google.com/specimen/Ubuntu) */
 	--fs-paragraph: 1rem;
 	--fw-sm: 400;
 	--fw-md: 500;
@@ -46,13 +45,11 @@
 	font-family: "Ubuntu-Regular";
 	background-color: var(--LightBlue);
 	overflow: hidden;
-	/* min-height: 100vh; */
 }
 main {
 	display: grid;
 	grid-template-columns: 1fr;
 	grid-template-rows: 150px 50px auto;
-	/* background-color: green; */
 }
 .attributionContainer {
 	position: fixed;
@@ -80,7 +77,6 @@ main {
 	overflow: hidden;
 }
 .attribution a {
-	/* color: hsl(228, 45%, 44%); */
 	color: var(--MarineBlue);
 }
 ul.slide {
@@ -93,7 +89,6 @@ ul.slide {
 	list-style: none;
 }
 ul.slide li {
-	/* background-color: red; */
 	background-color: rgba(0, 0, 0, 0.4);
 	height: 100%;
 	width: 20%;
@@ -103,7 +98,6 @@ ul.slide li {
 	top: 0;
 	right: 0em;
 	background-color: var(--StrawberryRed);
-	/* cursor: pointer; */
 }
 button {
 	border: 0;
@@ -324,9 +318,6 @@ label {
 .error--plan {
 	position: absolute;
 	bottom: -3.5em;
-	/* left: 50%; */
-	/* transform: translateX(-50%); */
-	/* color: var(--StrawberryRed); */
 	background-color: var(--StrawberryRed);
 	display: block;
 	width: 100%;
@@ -334,17 +325,11 @@ label {
 	border-radius: 4px;
 	text-align: center;
 	font-style: italic;
-	/* color: var(--MarineBlue); */
 	color: #fff;
-	/* border: 1px solid transparent;
-	border-radius: 8px;
-	box-shadow: -1px 1px 5px rgba(0, 0, 0, 0.2); */
 }
 .error--addons {
 	position: absolute;
 	bottom: -2em;
-	/* color: var(--StrawberryRed); */
-
 	background-color: var(--StrawberryRed);
 	display: block;
 	width: 90%;
@@ -353,8 +338,6 @@ label {
 	text-align: center;
 	font-style: italic;
 	color: #fff;
-	/* border: 1px solid transparent;
-	box-shadow: inset -1px 1px 5px rgba(0, 0, 0, 0.2); */
 }
 
 /* =================================================================== */
@@ -380,13 +363,7 @@ label {
 	border-radius: 1em;
 	background-color: var(--MarineBlue);
 	padding: 0.12em 0;
-	
-	/* display: flex;
-	align-items: center;
-	justify-content: flex-start; */
-	
 	position: relative;
-	/* overflow: hidden; */
 }
 .toggle__rate__checkbox {
 	opacity: 0;
@@ -488,7 +465,6 @@ label {
 }
 .btn--confirm {
 	background-color: var(--PurplishBlue);
-	/* transition: all .3s ease; */
 }
 .btn--confirm:hover {
 	opacity: .8;
@@ -592,8 +568,6 @@ label {
 		padding: 1em;
 		background-color: var(--White);
 		border-radius: 8px;
-		/* gap: 3em; */
-		/* background-color: red; */
 		padding: 0;
 	}
 	.tabContainer {
@@ -612,8 +586,6 @@ label {
 		grid-row: 1/-1;
 		grid-column: 2;
 		top: 0em;
-		/* display: grid;
-		justify-content: center; */
 		padding: 0;
 		margin: 1em 0em 1em 0;
 		max-width: 500px;
@@ -662,9 +634,6 @@ label {
 	}
 
 	.form__navigation {
-		/* position: absolute;
-		bottom: 0;
-		left: 0; */
 		max-width: inherit;
 		width: 100%;
 		padding-inline: 1.5em;

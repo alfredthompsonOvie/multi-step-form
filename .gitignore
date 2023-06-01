@@ -27,3 +27,6 @@ coverage
 *.sln
 *.sw?
 /template
+/components/FormStep.vue
+src/components/FormWizard.vue
+FormWizard.vue

@@ -4,7 +4,6 @@
 	:css="false"
 	@enter="onEnter"
 	>
-	<!-- @leave="onLeave"  -->
 		<div class="attributionContainer" v-if="isloaded">
 			<div class="attribution">
 				<p>
@@ -228,61 +227,6 @@
 			<FormStep>
 				<h1>Pick add-ons</h1>
 				<p>Add-ons help enhance your gaming experience.</p>
-				<!-- 
-				<section class="form__group__addons">
-					<Field
-						type="checkbox"
-						name="addons"
-						id="onlineService"
-						value="Online service"
-						class="addons__checkbox"
-						v-model="formData.addons"
-					/>
-					<label for="onlineService" class="addons__label">
-						<section>
-							<h1 class="label__title">Online service</h1>
-							<p>Access to multiplayer games</p>
-						</section>
-						<p class="add_ons__price">+$1/mo</p>
-					</label>
-				</section>
-
-				<section class="form__group__addons">
-					<Field
-						type="checkbox"
-						name="addons"
-						id="largerStorage"
-						value="Larger storage"
-						class="addons__checkbox"
-						v-model="formData.addons"
-					/>
-					<label for="largerStorage" class="addons__label">
-						<section>
-							<h1 class="label__title">Larger storage</h1>
-							<p>Extra 1TB of cloud save</p>
-						</section>
-						<p class="add_ons__price">+$2/mo</p>
-					</label>
-				</section>
-
-				<section class="form__group__addons">
-					<Field
-						type="checkbox"
-						name="addons"
-						id="customizableProfile"
-						value="Customizable profile"
-						class="addons__checkbox"
-						v-model="formData.addons"
-					/>
-					<label for="customizableProfile" class="addons__label">
-						<section>
-							<h1 class="label__title">Customizable Profile</h1>
-							<p>Custom theme on your profile</p>
-						</section>
-						<p class="add_ons__price">+$2/mo</p>
-					</label>
-				</section> -->
-
 				<section
 					class="form__group__addons"
 					v-for="addons in displayAddons"
@@ -493,15 +437,6 @@ const onEnter = (el, done) => {
 		
 	})
  }
-// const onLeave = (el, done) => {
-// 	const preloader = el.querySelector('.attributionContainer');
-// 	gsap.from(preloader, {
-// 		y: 20,
-// 		autoAlpha: 0.01,
-// 		ease: 'circ',
-// 		onComplete: done,
-// 	})
-//  }
 // THIS IS V-MODELLED INTO THE FORM AND IT MAKES VALIDATION ON ADDONS STEP WORK============================================================================
 const formData = ref({
 	rate: false,
